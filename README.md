@@ -16,25 +16,29 @@
 
 ## The problem
 
-I'm usually repeating a section of code for extract credentials (username and password) given an authorization header.
-This utility wants to extract this logic to reuse it across my different projects.
+I'm usually repeating code when I was working with Basic Authentication. This
+type of authentication uses Base64 encoding so it's very usual to extract
+credentials (username and password) given an authorization header or, given the
+credentials, build the header. This utility wants to extract this logic to reuse
+it across my different projects.
 
 ## This solution
 
-It's a simple utility function which, process your request headers and return an object with the username and the password or an Error if:
+It's a simple set of utility functions that:
 
-- The authorization (or Authorization) header is not given.
-- Its format is not correct.
+- process your request headers and return an object with the username and the
+  password or an Error if:
 
+  - The authorization (or Authorization) header is not given.
+  - Its format is not correct.
+
+- given a username and password, returns a Basic header.
 
 ## Table of Contents
 
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
 
-- [The problem](#the-problem)
-- [This solution](#this-solution)
-- [Table of Contents](#table-of-contents)
 - [Installation](#installation)
 - [Usage](#usage)
 - [Other Solutions](#other-solutions)
@@ -57,12 +61,22 @@ npm install --save @ricveal/basic-auth-utils
 
 ## Usage
 
-Once it's installed as dependency, you only have to import it and use it with a `headers` object:
+Once it's installed as dependency, you only have to import it and use the util
+you prefer:
 
-```js
-const headers = { authorization: 'Basic dXNlcjp0ZXN0' }
-const credentials = getUsernameAndPasswordFromAuthBasic(headers)
-// credentials = { username: "user", password: "test" }
+```ts
+import {
+  getUsernameAndPasswordFromAuthBasic,
+  getAuthBasicFromUsernameAndPassword,
+} from '@ricveal/basic-auth-utils'
+
+const headers = {
+  authorization: 'Basic dXNlcjp0ZXN0',
+}
+const {username, password} = getUsernameAndPasswordFromAuthBasic(headers)
+console.log(username, password) // 'user', 'test'
+
+console.log(getAuthBasicFromUsernameAndPassword('user', 'test')) // 'Basic dXNlcjp0ZXN0'
 ```
 
 ## Other Solutions
